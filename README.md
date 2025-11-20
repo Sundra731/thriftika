@@ -221,32 +221,33 @@ npm run preview
 - `POST /api/verify/submit` - Submit seller verification
 - `GET /api/verify/status` - Check verification status
 
-## 🎨 Color Palette Options
+## 🎨 Color Palette
 
-Thriftika supports multiple color themes. Current implementation uses a blue primary palette, but you can easily switch to:
+Thriftika uses an **Earthy Greens** color palette that perfectly matches the sustainable, eco-friendly nature of thrift shopping:
 
-### Alternative Palettes
+### Current Palette (Earthy Greens - Sustainable Theme)
+- **Primary Green** `#4A7C59` - Forest green for trust and nature
+- **Secondary Brown** `#8B4513` - Saddle brown for warmth and earthiness
+- **Accent Cream** `#F5F5DC` - Beige/cream for sophistication
 
-1. **Earthy Greens** (Sustainable Theme)
-   ```css
-   --primary: #4A7C59;
-   --secondary: #8B4513;
-   --accent: #F5F5DC;
-   ```
+### Alternative Palettes Available
 
-2. **Vintage Pastels** (Retro Theme)
+1. **Vintage Pastels** (Retro Theme)
    ```css
    --primary: #B19CD9;
    --secondary: #98D8C8;
    --accent: #F4C2C2;
    ```
 
-3. **Eco-Friendly Greens** (Environmental Theme)
+2. **Eco-Friendly Greens** (Environmental Theme)
    ```css
    --primary: #2F4F4F;
    --secondary: #87A96B;
    --accent: #8B7355;
    ```
+
+### Changing Colors
+To switch palettes, update `client/tailwind.config.js` with your preferred colors. The design system automatically adapts to any palette you choose.
 
 ## 🔒 Security Features
 
