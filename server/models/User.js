@@ -47,6 +47,12 @@ const userSchema = new mongoose.Schema(
     avatar: {
       type: String, // URL to profile image
     },
+    resetPasswordToken: {
+      type: String,
+    },
+    resetPasswordExpiry: {
+      type: Date,
+    },
   },
   {
     timestamps: true,
@@ -71,4 +77,5 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
 const User = mongoose.model('User', userSchema);
 
 export default User;
+
 

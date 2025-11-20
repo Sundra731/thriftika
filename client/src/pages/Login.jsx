@@ -108,9 +108,9 @@ const Login = () => {
               </div>
 
               <div className="text-sm">
-                <a href="#" className="font-medium text-primary-600 hover:text-primary-500">
+                <Link to="/forgot-password" className="font-medium text-primary-600 dark:text-primary-400 hover:text-primary-500 dark:hover:text-primary-300">
                   Forgot password?
-                </a>
+                </Link>
               </div>
             </div>
 
@@ -131,4 +131,7 @@ const Login = () => {
 };
 
 export default Login;
+
+
+
 

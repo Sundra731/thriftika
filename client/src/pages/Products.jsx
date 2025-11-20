@@ -27,12 +27,12 @@ const Products = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-secondary-50 dark:bg-dark-900 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Browse Products</h1>
-          <p className="text-gray-600">Discover verified thrift fashion from trusted sellers</p>
+          <h1 className="text-4xl font-bold text-secondary-900 dark:text-light-100 mb-2">Browse Products</h1>
+          <p className="text-secondary-600 dark:text-light-300">Discover verified thrift fashion from trusted sellers</p>
         </div>
 
         {/* Search and Filters */}
@@ -41,7 +41,7 @@ const Products = () => {
           <form onSubmit={handleSearch} className="flex gap-4">
             <div className="flex-1 relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FiSearch className="h-5 w-5 text-gray-400" />
+                <FiSearch className="h-5 w-5 text-secondary-400 dark:text-light-500" />
               </div>
               <input
                 type="text"
@@ -72,8 +72,8 @@ const Products = () => {
                 onClick={() => handleCategoryChange(category.value)}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                   selectedCategory === category.value
-                    ? 'bg-primary-600 text-white'
-                    : 'bg-white text-gray-700 hover:bg-gray-100'
+                    ? 'bg-primary-600 dark:bg-primary-500 text-light-100'
+                    : 'bg-light-50 dark:bg-dark-800 text-secondary-700 dark:text-light-200 hover:bg-light-100 dark:hover:bg-dark-700 border border-light-200 dark:border-dark-700'
                 }`}
               >
                 {category.label}
@@ -85,8 +85,8 @@ const Products = () => {
         {/* Products Grid */}
         {loading ? (
           <div className="text-center py-12">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
-            <p className="mt-4 text-gray-600">Loading products...</p>
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 dark:border-primary-400"></div>
+            <p className="mt-4 text-secondary-600 dark:text-light-400">Loading products...</p>
           </div>
         ) : products.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -95,9 +95,9 @@ const Products = () => {
             ))}
           </div>
         ) : (
-          <div className="text-center py-12 bg-white rounded-lg">
-            <p className="text-gray-600 text-lg">No products found</p>
-            <p className="text-gray-500 mt-2">Try adjusting your search or filters</p>
+          <div className="text-center py-12 bg-light-50 dark:bg-dark-800 rounded-lg border border-light-200 dark:border-dark-700">
+            <p className="text-secondary-600 dark:text-light-400 text-lg">No products found</p>
+            <p className="text-secondary-500 dark:text-light-500 mt-2">Try adjusting your search or filters</p>
           </div>
         )}
       </div>
@@ -106,4 +106,7 @@ const Products = () => {
 };
 
 export default Products;
+
+
+
 

@@ -3,6 +3,7 @@ export const API_ENDPOINTS = {
     REGISTER: '/auth/register',
     LOGIN: '/auth/login',
     ME: '/auth/me',
+    FORGOT_PASSWORD: '/auth/forgot-password',
   },
   PRODUCTS: {
     ALL: '/products',
@@ -22,6 +23,11 @@ export const API_ENDPOINTS = {
   VERIFICATION: {
     STATUS: '/verify/status',
     SUBMIT: '/verify/submit',
+  },
+  PAYMENTS: {
+    INITIATE: '/payments/initiate',
+    STATUS: (id) => `/payments/status/${id}`,
+    MY_TRANSACTIONS: '/payments/my-transactions',
   },
 };
 
@@ -53,4 +59,7 @@ export const REPORT_REASONS = [
   { value: 'fraudulent-payment', label: 'Fraudulent Payment' },
   { value: 'other', label: 'Other' },
 ];
+
+
+
 

@@ -26,3 +26,6 @@ router.put('/:id/reject', protect, rejectVerification);
 
 export default router;
 
+
+
+

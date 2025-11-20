@@ -26,3 +26,6 @@ router.put('/:id/resolve', protect, resolveReport);
 
 export default router;
 
+
+
+

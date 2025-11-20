@@ -92,9 +92,14 @@ export const createProduct = async (req, res, next) => {
       category,
       size,
       condition,
-      images,
       tags,
     } = req.body;
+
+    // Process uploaded images
+    let imageUrls = [];
+    if (req.files && req.files.length > 0) {
+      imageUrls = req.files.map(file => `/uploads/${file.filename}`);
+    }
 
     const product = await Product.create({
       name,
@@ -103,8 +108,8 @@ export const createProduct = async (req, res, next) => {
       category,
       size,
       condition,
-      images: images || [],
-      tags: tags || [],
+      images: imageUrls,
+      tags: tags ? JSON.parse(tags) : [],
       seller: req.user._id,
     });
 
@@ -198,4 +203,7 @@ export const getMyProducts = async (req, res, next) => {
     next(error);
   }
 };
+
+
+
 

@@ -9,14 +9,21 @@ import Register from './pages/Register';
 import Products from './pages/Products';
 import ProductDetails from './pages/ProductDetails';
 import ReportSeller from './pages/ReportSeller';
+import SellerVerification from './pages/SellerVerification';
+import SellerDashboard from './pages/SellerDashboard';
+import AddProduct from './pages/AddProduct';
+import ForgotPassword from './pages/ForgotPassword';
 import NotFound from './pages/NotFound';
 import useAuthStore from './store/authStore';
+import useThemeStore from './store/themeStore';
 
 function App() {
   const { initializeAuth } = useAuthStore();
+  const { initializeTheme } = useThemeStore();
 
   useEffect(() => {
     initializeAuth();
+    initializeTheme();
   }, []);
 
   return (
@@ -28,9 +35,13 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/products" element={<Products />} />
             <Route path="/products/:id" element={<ProductDetails />} />
             <Route path="/report" element={<ReportSeller />} />
+            <Route path="/verification" element={<SellerVerification />} />
+            <Route path="/seller/dashboard" element={<SellerDashboard />} />
+            <Route path="/seller/add-product" element={<AddProduct />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
@@ -42,4 +53,7 @@ function App() {
 }
 
 export default App;
+
+
+
 

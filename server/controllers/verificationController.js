@@ -1,5 +1,6 @@
 import Verification from '../models/Verification.js';
 import User from '../models/User.js';
+import { sendVerificationStatusEmail } from '../utils/emailUtils.js';
 
 /**
  * @route   GET /api/verify/test
@@ -158,7 +159,15 @@ export const approveVerification = async (req, res, next) => {
     await verification.save();
 
     // Update user verification status
-    await User.findByIdAndUpdate(verification.seller, { isVerified: true });
+    const seller = await User.findByIdAndUpdate(verification.seller, { isVerified: true }, { new: true });
+
+    // Send notification email
+    try {
+      await sendVerificationStatusEmail(seller.email, 'approved');
+    } catch (emailError) {
+      console.error('Failed to send approval email:', emailError);
+      // Don't fail the request if email fails
+    }
 
     res.json({
       success: true,
@@ -193,7 +202,15 @@ export const rejectVerification = async (req, res, next) => {
     await verification.save();
 
     // Ensure user verification status is false
-    await User.findByIdAndUpdate(verification.seller, { isVerified: false });
+    const seller = await User.findByIdAndUpdate(verification.seller, { isVerified: false }, { new: true });
+
+    // Send notification email
+    try {
+      await sendVerificationStatusEmail(seller.email, 'rejected');
+    } catch (emailError) {
+      console.error('Failed to send rejection email:', emailError);
+      // Don't fail the request if email fails
+    }
 
     res.json({
       success: true,
@@ -204,4 +221,7 @@ export const rejectVerification = async (req, res, next) => {
     next(error);
   }
 };
+
+
+
 

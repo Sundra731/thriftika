@@ -51,6 +51,21 @@ export const useAuth = () => {
     }
   };
 
+  const forgotPassword = async (email) => {
+    setLoading(true);
+    try {
+      await api.post(API_ENDPOINTS.AUTH.FORGOT_PASSWORD, { email });
+      showToast('Password reset link sent to your email!', 'success');
+      return true;
+    } catch (error) {
+      const message = error.response?.data?.message || 'Failed to send reset link';
+      showToast(message, 'error');
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const logoutUser = () => {
     logout();
     showToast('Logged out successfully', 'success');
@@ -63,7 +78,11 @@ export const useAuth = () => {
     loading,
     register,
     login,
+    forgotPassword,
     logout: logoutUser,
   };
 };
+
+
+
 

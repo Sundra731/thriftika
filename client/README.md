@@ -131,3 +131,6 @@ The built files will be in the `dist` directory.
 - Toast notifications automatically disappear after 5 seconds
 - The app is optimized for mobile devices with a responsive layout
 
+
+
+

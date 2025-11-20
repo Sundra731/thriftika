@@ -32,3 +32,4 @@ export const sendVerificationStatusEmail = async (email, status) => {
   console.log(`Verification status email would be sent to ${email}: ${status}`);
 };
 
+

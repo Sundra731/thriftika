@@ -62,6 +62,31 @@ const transactionSchema = new mongoose.Schema(
       type: String,
       enum: ['refund-buyer', 'release-seller', 'partial-refund', 'pending'],
     },
+    // M-Pesa specific fields
+    phoneNumber: {
+      type: String,
+    },
+    mpesaCheckoutRequestId: {
+      type: String,
+    },
+    mpesaResponseCode: {
+      type: String,
+    },
+    mpesaResponseDescription: {
+      type: String,
+    },
+    mpesaCustomerMessage: {
+      type: String,
+    },
+    mpesaReceiptNumber: {
+      type: String,
+    },
+    completedAt: {
+      type: Date,
+    },
+    failureReason: {
+      type: String,
+    },
   },
   {
     timestamps: true,
@@ -71,4 +96,5 @@ const transactionSchema = new mongoose.Schema(
 const Transaction = mongoose.model('Transaction', transactionSchema);
 
 export default Transaction;
+
 

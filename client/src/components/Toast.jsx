@@ -23,15 +23,15 @@ const Toast = () => {
   const getStyles = (type) => {
     switch (type) {
       case 'success':
-        return 'bg-green-50 border-green-200 text-green-800';
+        return 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200';
       case 'error':
-        return 'bg-red-50 border-red-200 text-red-800';
+        return 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-800 dark:text-red-200';
       case 'info':
-        return 'bg-blue-50 border-blue-200 text-blue-800';
+        return 'bg-primary-50 dark:bg-primary-900/20 border-primary-200 dark:border-primary-800 text-primary-800 dark:text-primary-200';
       case 'warning':
-        return 'bg-yellow-50 border-yellow-200 text-yellow-800';
+        return 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-200';
       default:
-        return 'bg-gray-50 border-gray-200 text-gray-800';
+        return 'bg-secondary-50 dark:bg-accent-800 border-secondary-200 dark:border-accent-700 text-secondary-800 dark:text-accent-200';
     }
   };
 
@@ -50,7 +50,7 @@ const Toast = () => {
           </div>
           <button
             onClick={() => removeToast(toast.id)}
-            className="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors"
+            className="flex-shrink-0 text-secondary-400 dark:text-light-500 hover:text-secondary-600 dark:hover:text-light-300 transition-colors"
           >
             <FiX className="h-4 w-4" />
           </button>
@@ -61,4 +61,7 @@ const Toast = () => {
 };
 
 export default Toast;
+
+
+
 

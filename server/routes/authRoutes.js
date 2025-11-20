@@ -2,6 +2,7 @@ import express from 'express';
 import {
   register,
   login,
+  forgotPassword,
   getMe,
 } from '../controllers/authController.js';
 import { protect } from '../middleware/authMiddleware.js';
@@ -16,9 +17,13 @@ router.get('/test', (req, res) => {
 // Public routes
 router.post('/register', register);
 router.post('/login', login);
+router.post('/forgot-password', forgotPassword);
 
 // Protected routes
 router.get('/me', protect, getMe);
 
 export default router;
+
+
+
 
