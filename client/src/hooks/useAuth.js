@@ -66,6 +66,21 @@ export const useAuth = () => {
     }
   };
 
+  const resetPassword = async (token, newPassword) => {
+    setLoading(true);
+    try {
+      await api.post(`/auth/reset-password/${token}`, { password: newPassword });
+      showToast('Password reset successfully!', 'success');
+      return { success: true };
+    } catch (error) {
+      const message = error.response?.data?.message || 'Failed to reset password';
+      showToast(message, 'error');
+      return { success: false, error: message };
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const logoutUser = () => {
     logout();
     showToast('Logged out successfully', 'success');
@@ -79,6 +94,7 @@ export const useAuth = () => {
     register,
     login,
     forgotPassword,
+    resetPassword,
     logout: logoutUser,
   };
 };

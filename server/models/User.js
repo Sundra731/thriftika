@@ -47,6 +47,9 @@ const userSchema = new mongoose.Schema(
     avatar: {
       type: String, // URL to profile image
     },
+    googleId: {
+      type: String, // Google OAuth ID
+    },
     resetPasswordToken: {
       type: String,
     },

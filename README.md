@@ -29,6 +29,8 @@
 - ✅ **Real-time Notifications** - Toast notifications for all actions
 - ✅ **Responsive Design** - Works on all devices
 - ✅ **Secure Authentication** - JWT-based auth with role management
+- ✅ **Google OAuth** - Sign in with Google account
+- ✅ **Password Reset** - Email-based password recovery
 - ✅ **Image Upload** - Cloud-ready file storage
 - ✅ **Transaction History** - Complete purchase tracking
 
@@ -164,11 +166,31 @@ npm run preview
 
 ## 📖 Usage Guide
 
+### Authentication Methods
+
+Thriftika supports multiple authentication methods:
+
+#### Traditional Email/Password
+- Register with email and password
+- Choose role: Buyer or Seller
+- Secure JWT-based authentication
+
+#### Google OAuth
+- Sign in with Google account
+- Automatic profile creation
+- Pre-verified accounts for Google users
+
+#### Password Recovery
+- Forgot password link on login page
+- Email-based password reset
+- Secure token-based recovery
+
 ### For Buyers
 
 1. **Register/Login**
    - Create account with "Buy products" role
-   - Login to access full features
+   - Login with email/password or Google
+   - Reset password if forgotten
 
 2. **Browse Products**
    - Visit Products page

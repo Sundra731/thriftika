@@ -4,6 +4,7 @@ export const API_ENDPOINTS = {
     LOGIN: '/auth/login',
     ME: '/auth/me',
     FORGOT_PASSWORD: '/auth/forgot-password',
+    RESET_PASSWORD: (token) => `/auth/reset-password/${token}`,
   },
   PRODUCTS: {
     ALL: '/products',
