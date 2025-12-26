@@ -93,7 +93,31 @@ export const createProduct = async (req, res, next) => {
       size,
       condition,
       tags,
+      thriftikaTagPhoto, // Security measure #3 - REQUIRED
+      tagPhotoDate, // Date shown in the tag photo
     } = req.body;
+
+    // Validate Thriftika tag photo - Security measure #3
+    if (!thriftikaTagPhoto) {
+      return res.status(400).json({ 
+        message: 'Thriftika tag photo is required. Please upload a photo of the item with a handwritten note showing "Thriftika" and today\'s date.' 
+      });
+    }
+
+    if (!tagPhotoDate) {
+      return res.status(400).json({ 
+        message: 'Tag photo date is required. Please provide the date shown in your tag photo.' 
+      });
+    }
+
+    // Validate date is recent (within last 7 days)
+    const photoDate = new Date(tagPhotoDate);
+    const daysDiff = (Date.now() - photoDate.getTime()) / (1000 * 60 * 60 * 24);
+    if (daysDiff > 7 || daysDiff < 0) {
+      return res.status(400).json({ 
+        message: 'Tag photo date must be within the last 7 days and cannot be in the future.' 
+      });
+    }
 
     // Process uploaded images
     let imageUrls = [];
@@ -111,6 +135,9 @@ export const createProduct = async (req, res, next) => {
       images: imageUrls,
       tags: tags ? JSON.parse(tags) : [],
       seller: req.user._id,
+      thriftikaTagPhoto,
+      tagPhotoDate: photoDate,
+      tagPhotoVerified: false, // Will be verified by admin
     });
 
     res.status(201).json({
@@ -203,6 +230,8 @@ export const getMyProducts = async (req, res, next) => {
     next(error);
   }
 };
+
+
 
 
 

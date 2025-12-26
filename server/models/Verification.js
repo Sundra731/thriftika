@@ -8,6 +8,21 @@ const verificationSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    // Enhanced verification - Security measure #2
+    phoneVerified: {
+      type: Boolean,
+      default: false,
+    },
+    phoneVerificationCode: {
+      type: String,
+    },
+    phoneVerificationExpiry: {
+      type: Date,
+    },
+    selfieWithId: {
+      type: String, // URL to selfie holding ID
+      required: [true, 'Selfie with ID is required for verification'],
+    },
     idType: {
       type: String,
       enum: ['national-id', 'passport', 'drivers-license'],

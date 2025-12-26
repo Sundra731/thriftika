@@ -75,10 +75,28 @@ export const login = async (req, res, next) => {
       return res.status(401).json({ message: 'Account is inactive. Please contact support.' });
     }
 
+    // Check if user has a password (OAuth users might not have one)
+    if (!user.password) {
+      return res.status(401).json({ message: 'This account was created with Google. Please sign in with Google instead.' });
+    }
+
     // Check password
     const isMatch = await user.matchPassword(password);
     if (!isMatch) {
       return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    // Check if 2FA is enabled
+    if (user.twoFactorEnabled) {
+      return res.json({
+        success: true,
+        message: '2FA required',
+        data: {
+          requiresTwoFactor: true,
+          userId: user._id,
+          twoFactorMethod: user.twoFactorMethod,
+        },
+      });
     }
 
     // Generate token
@@ -202,6 +220,74 @@ export const resetPassword = async (req, res, next) => {
 
 
 /**
+ * @route   POST /api/auth/verify-2fa
+ * @desc    Complete login with 2FA verification
+ * @access  Public
+ */
+export const verifyTwoFactorLogin = async (req, res, next) => {
+  try {
+    const { userId, code } = req.body;
+
+    const user = await User.findById(userId);
+
+    if (!user || !user.twoFactorEnabled) {
+      return res.status(400).json({ message: '2FA not enabled for this user' });
+    }
+
+    // Verify 2FA code (reuse logic from 2FA controller)
+    let isValid = false;
+
+    if (user.twoFactorMethod === 'authenticator') {
+      const speakeasy = await import('speakeasy');
+      isValid = speakeasy.totp.verify({
+        secret: user.twoFactorSecret,
+        encoding: 'base32',
+        token: code,
+        window: 2,
+      });
+    } else if (user.twoFactorMethod === 'email') {
+      isValid = user.twoFactorTempSecret === code;
+      if (isValid) {
+        user.twoFactorTempSecret = undefined;
+      }
+    }
+
+    // Check backup codes
+    if (!isValid && user.twoFactorBackupCodes.includes(code)) {
+      isValid = true;
+      user.twoFactorBackupCodes = user.twoFactorBackupCodes.filter(c => c !== code);
+    }
+
+    if (isValid) {
+      user.twoFactorVerified = true;
+      await user.save();
+
+      // Generate token
+      const token = generateToken(user._id);
+
+      res.json({
+        success: true,
+        message: 'Login successful',
+        data: {
+          user: {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            isVerified: user.isVerified,
+          },
+          token,
+        },
+      });
+    } else {
+      res.status(400).json({ message: 'Invalid 2FA code' });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
  * @route   GET /api/auth/me
  * @desc    Get current logged in user
  * @access  Private
@@ -229,6 +315,8 @@ export const getMe = async (req, res, next) => {
     next(error);
   }
 };
+
+
 
 
 

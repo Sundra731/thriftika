@@ -1,5 +1,6 @@
 import Transaction from '../models/Transaction.js';
 import Product from '../models/Product.js';
+import { checkAndAutoReleaseEscrow } from '../utils/escrowAutoRelease.js';
 
 /**
  * @route   GET /api/transactions/test
@@ -102,6 +103,9 @@ export const getMyTransactions = async (req, res, next) => {
  */
 export const getTransaction = async (req, res, next) => {
   try {
+    // Check for auto-release before fetching
+    await checkAndAutoReleaseEscrow();
+
     const transaction = await Transaction.findById(req.params.id)
       .populate('buyer', 'name email phone address')
       .populate('seller', 'name email phone address')
@@ -195,6 +199,8 @@ export const updateTransactionStatus = async (req, res, next) => {
     next(error);
   }
 };
+
+
 
 
 

@@ -36,6 +36,19 @@ const productSchema = new mongoose.Schema(
         type: String, // URLs to product images
       },
     ],
+    // Thriftika Tag Photo - Security measure #3
+    thriftikaTagPhoto: {
+      type: String, // URL to photo with handwritten "Thriftika + Date" note
+      required: [true, 'Thriftika tag photo is required for all listings'],
+    },
+    tagPhotoDate: {
+      type: Date, // Date shown in the tag photo
+      required: true,
+    },
+    tagPhotoVerified: {
+      type: Boolean,
+      default: false, // Admin verification of tag photo
+    },
     seller: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',

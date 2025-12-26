@@ -3,7 +3,7 @@ import nodemailer from 'nodemailer';
 
 // Create transporter
 const createTransporter = () => {
-  return nodemailer.createTransporter({
+  return nodemailer.createTransport({
     host: process.env.EMAIL_HOST || 'smtp.gmail.com',
     port: process.env.EMAIL_PORT || 587,
     secure: false, // true for 465, false for other ports
@@ -21,6 +21,14 @@ const createTransporter = () => {
  */
 export const sendVerificationEmail = async (email, token) => {
   try {
+    // In development mode, simulate email sending without real email service
+    if (process.env.NODE_ENV !== 'production' && !process.env.EMAIL_USER) {
+      console.log(`🔄 [DEV MODE] Verification email would be sent to: ${email}`);
+      console.log(`🔗 Verification URL: ${process.env.FRONTEND_URL || 'http://localhost:5173'}/verify/${token}`);
+      console.log('✅ Email simulation successful');
+      return { success: true, messageId: 'dev-mode-simulated' };
+    }
+
     const transporter = createTransporter();
 
     const mailOptions = {
@@ -32,13 +40,13 @@ export const sendVerificationEmail = async (email, token) => {
           <h2 style="color: #4A7C59;">Welcome to Thriftika!</h2>
           <p>Please verify your email address to complete your registration.</p>
           <div style="text-align: center; margin: 30px 0;">
-            <a href="${process.env.FRONTEND_URL}/verify/${token}"
+            <a href="${process.env.FRONTEND_URL || 'http://localhost:5173'}/verify/${token}"
                style="background-color: #4A7C59; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
               Verify Email
             </a>
           </div>
           <p>If the button doesn't work, copy and paste this link into your browser:</p>
-          <p style="word-break: break-all; color: #666;">${process.env.FRONTEND_URL}/verify/${token}</p>
+          <p style="word-break: break-all; color: #666;">${process.env.FRONTEND_URL || 'http://localhost:5173'}/verify/${token}</p>
           <p>This link will expire in 24 hours.</p>
           <p>Best regards,<br>The Thriftika Team</p>
         </div>
@@ -61,9 +69,17 @@ export const sendVerificationEmail = async (email, token) => {
  */
 export const sendPasswordResetEmail = async (email, resetToken) => {
   try {
+    // In development mode, simulate email sending without real email service
+    if (!process.env.EMAIL_USER || process.env.EMAIL_USER.includes('your-email') || !process.env.EMAIL_PASS || process.env.EMAIL_PASS.includes('your-')) {
+      console.log(`🔄 [DEV MODE] Password reset email would be sent to: ${email}`);
+      console.log(`🔗 Reset URL: ${process.env.FRONTEND_URL || 'http://localhost:5173'}/reset-password/${resetToken}`);
+      console.log('✅ Email simulation successful');
+      return { success: true, messageId: 'dev-mode-simulated' };
+    }
+
     const transporter = createTransporter();
 
-    const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+    const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/reset-password/${resetToken}`;
 
     const mailOptions = {
       from: `"Thriftika" <${process.env.EMAIL_USER}>`,
@@ -99,12 +115,47 @@ export const sendPasswordResetEmail = async (email, resetToken) => {
 };
 
 /**
+ * Send generic email
+ * @param {Object} options - Email options
+ * @param {string} options.to - Recipient email
+ * @param {string} options.subject - Email subject
+ * @param {string} options.html - Email HTML content
+ */
+export const sendEmail = async ({ to, subject, html }) => {
+  try {
+    const transporter = createTransporter();
+
+    const mailOptions = {
+      from: `"Thriftika" <${process.env.EMAIL_USER}>`,
+      to,
+      subject,
+      html,
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Email sent:', info.messageId);
+    return { success: true, messageId: info.messageId };
+  } catch (error) {
+    console.error('Error sending email:', error);
+    throw new Error('Failed to send email');
+  }
+};
+
+/**
  * Send seller verification status email
  * @param {string} email - Recipient email
  * @param {string} status - Verification status (approved/rejected)
  */
 export const sendVerificationStatusEmail = async (email, status) => {
   try {
+    // In development mode, simulate email sending without real email service
+    if (process.env.NODE_ENV !== 'production' && !process.env.EMAIL_USER) {
+      console.log(`🔄 [DEV MODE] Verification status email would be sent to: ${email}`);
+      console.log(`📊 Status: ${status}`);
+      console.log('✅ Email simulation successful');
+      return { success: true, messageId: 'dev-mode-simulated' };
+    }
+
     const transporter = createTransporter();
 
     const statusMessages = {
@@ -133,7 +184,7 @@ export const sendVerificationStatusEmail = async (email, status) => {
           <h2 style="color: ${statusInfo.color};">${statusInfo.title}</h2>
           <p>${statusInfo.message}</p>
           ${status === 'approved' ?
-            '<div style="text-align: center; margin: 30px 0;"><a href="' + process.env.FRONTEND_URL + '/seller/dashboard" style="background-color: #4A7C59; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">Start Selling</a></div>'
+            '<div style="text-align: center; margin: 30px 0;"><a href="' + (process.env.FRONTEND_URL || 'http://localhost:5173') + '/seller/dashboard" style="background-color: #4A7C59; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">Start Selling</a></div>'
             : '<p>Please log in to your account to check the status and resubmit if needed.</p>'
           }
           <p>Best regards,<br>The Thriftika Team</p>

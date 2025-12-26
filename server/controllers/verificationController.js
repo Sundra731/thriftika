@@ -3,6 +3,37 @@ import User from '../models/User.js';
 import { sendVerificationStatusEmail } from '../utils/emailUtils.js';
 
 /**
+ * Helper function to calculate profile completeness
+ */
+const calculateProfileCompleteness = (user, verification) => {
+  let score = 0;
+  const maxScore = 100;
+
+  // Basic info (30 points)
+  if (user.name) score += 10;
+  if (user.email) score += 10;
+  if (user.phone) score += 10;
+
+  // Address (20 points)
+  if (user.address) {
+    if (user.address.street) score += 5;
+    if (user.address.city) score += 5;
+    if (user.address.country) score += 5;
+    if (user.address.postalCode) score += 5;
+  }
+
+  // Verification (50 points)
+  if (verification) {
+    if (verification.phoneVerified) score += 10;
+    if (verification.selfieWithId) score += 20;
+    if (verification.idFrontImage) score += 10;
+    if (verification.idNumber) score += 10;
+  }
+
+  return Math.min(score, maxScore);
+};
+
+/**
  * @route   GET /api/verify/test
  * @desc    Test verification route
  * @access  Public
@@ -31,6 +62,8 @@ export const submitVerification = async (req, res, next) => {
     }
 
     const {
+      phoneNumber, // For phone verification
+      selfieWithId, // Selfie holding ID - REQUIRED
       idType,
       idNumber,
       idFrontImage,
@@ -39,12 +72,23 @@ export const submitVerification = async (req, res, next) => {
       additionalDocuments,
     } = req.body;
 
+    // Validate required fields for enhanced verification
+    if (!selfieWithId) {
+      return res.status(400).json({ message: 'Selfie with ID is required for verification' });
+    }
+
+    // Update user's phone if provided
+    if (phoneNumber) {
+      await User.findByIdAndUpdate(req.user._id, { phone: phoneNumber });
+    }
+
     // Create or update verification
     let verification;
     if (existingVerification) {
       verification = await Verification.findByIdAndUpdate(
         existingVerification._id,
         {
+          selfieWithId,
           idType,
           idNumber,
           idFrontImage,
@@ -58,6 +102,7 @@ export const submitVerification = async (req, res, next) => {
     } else {
       verification = await Verification.create({
         seller: req.user._id,
+        selfieWithId,
         idType,
         idNumber,
         idFrontImage,
@@ -66,6 +111,11 @@ export const submitVerification = async (req, res, next) => {
         additionalDocuments: additionalDocuments || [],
       });
     }
+
+    // Calculate profile completeness
+    const user = await User.findById(req.user._id);
+    const completeness = calculateProfileCompleteness(user, verification);
+    await User.findByIdAndUpdate(req.user._id, { profileCompleteness: completeness });
 
     res.status(201).json({
       success: true,
@@ -158,8 +208,19 @@ export const approveVerification = async (req, res, next) => {
     verification.reviewNotes = req.body.notes || 'Approved';
     await verification.save();
 
-    // Update user verification status
-    const seller = await User.findByIdAndUpdate(verification.seller, { isVerified: true }, { new: true });
+    // Update user verification status and mark phone/selfie as verified
+    const seller = await User.findByIdAndUpdate(
+      verification.seller,
+      {
+        isVerified: true,
+        phoneVerified: true,
+        phoneVerifiedAt: new Date(),
+        selfieVerified: true,
+        selfieImage: verification.selfieWithId,
+        selfieVerifiedAt: new Date(),
+      },
+      { new: true }
+    );
 
     // Send notification email
     try {
@@ -221,6 +282,8 @@ export const rejectVerification = async (req, res, next) => {
     next(error);
   }
 };
+
+
 
 
 

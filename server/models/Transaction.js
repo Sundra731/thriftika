@@ -30,6 +30,22 @@ const transactionSchema = new mongoose.Schema(
     paymentMethod: {
       type: String,
       enum: ['mpesa', 'bank-transfer', 'escrow', 'cash-on-delivery'],
+      default: 'escrow', // All payments go through escrow by default
+    },
+    // Escrow system fields
+    escrowHeld: {
+      type: Boolean,
+      default: false,
+    },
+    escrowHeldAt: {
+      type: Date,
+    },
+    escrowReleaseDate: {
+      type: Date,
+    },
+    autoReleaseAfterHours: {
+      type: Number,
+      default: 72, // Auto-release after 72 hours if buyer doesn't confirm
     },
     shippingAddress: {
       street: String,
@@ -40,10 +56,58 @@ const transactionSchema = new mongoose.Schema(
     trackingNumber: {
       type: String,
     },
+    courierName: {
+      type: String,
+      enum: ['dhl', 'fedex', 'ups', 'tnt', 'aramex', 'post-office', 'local-courier', 'other'],
+    },
+    courierTrackingUrl: {
+      type: String, // URL template for tracking
+    },
+    trackingUpdates: [
+      {
+        status: {
+          type: String,
+          enum: ['order-placed', 'processing', 'shipped', 'in-transit', 'out-for-delivery', 'delivered', 'failed-delivery', 'returned'],
+          required: true,
+        },
+        description: {
+          type: String,
+          required: true,
+        },
+        location: {
+          type: String,
+        },
+        timestamp: {
+          type: Date,
+          default: Date.now,
+        },
+        updatedBy: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User',
+        },
+      },
+    ],
     status: {
       type: String,
-      enum: ['pending', 'confirmed', 'shipped', 'delivered', 'completed', 'disputed', 'cancelled'],
+      enum: ['pending', 'payment-pending', 'payment-confirmed', 'in-escrow', 'shipped', 'delivered', 'delivery-confirmed', 'completed', 'disputed', 'cancelled'],
       default: 'pending',
+    },
+    // Delivery confirmation fields
+    shippingProof: {
+      type: String, // URL to shipping proof image/document
+    },
+    shippingProofUploadedAt: {
+      type: Date,
+    },
+    deliveryConfirmedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User', // Buyer who confirmed delivery
+    },
+    deliveryConfirmedAt: {
+      type: Date,
+    },
+    autoConfirmedAt: {
+      type: Date, // Auto-confirmation timestamp
     },
     buyerNotes: {
       type: String,
@@ -51,16 +115,20 @@ const transactionSchema = new mongoose.Schema(
     sellerNotes: {
       type: String,
     },
-    // Escrow fields for buyer protection
-    escrowReleaseDate: {
-      type: Date,
-    },
     disputeReason: {
       type: String,
     },
     resolution: {
       type: String,
       enum: ['refund-buyer', 'release-seller', 'partial-refund', 'pending'],
+    },
+    // Payment release tracking
+    paymentReleasedAt: {
+      type: Date,
+    },
+    paymentReleasedTo: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
     },
     // M-Pesa specific fields
     phoneNumber: {

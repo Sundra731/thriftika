@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// Use environment variable or default to '/api' (which will use Vite proxy)
+// Or set VITE_API_URL=http://localhost:5000/api in .env for direct connection
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 // Create axios instance
 const api = axios.create({
@@ -39,6 +41,8 @@ api.interceptors.response.use(
 );
 
 export default api;
+
+
 
 
 

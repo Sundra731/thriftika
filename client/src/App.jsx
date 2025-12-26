@@ -8,7 +8,10 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Products from './pages/Products';
 import ProductDetails from './pages/ProductDetails';
+import Cart from './pages/Cart';
 import ReportSeller from './pages/ReportSeller';
+import DisputeCenter from './pages/DisputeCenter';
+import Messages from './pages/Messages';
 import SellerVerification from './pages/SellerVerification';
 import SellerDashboard from './pages/SellerDashboard';
 import AddProduct from './pages/AddProduct';
@@ -42,7 +45,10 @@ function App() {
             <Route path="/auth/callback" element={<AuthCallback />} />
             <Route path="/products" element={<Products />} />
             <Route path="/products/:id" element={<ProductDetails />} />
+            <Route path="/cart" element={<Cart />} />
             <Route path="/report" element={<ReportSeller />} />
+            <Route path="/disputes" element={<DisputeCenter />} />
+            <Route path="/messages" element={<Messages />} />
             <Route path="/verification" element={<SellerVerification />} />
             <Route path="/seller/dashboard" element={<SellerDashboard />} />
             <Route path="/seller/add-product" element={<AddProduct />} />
@@ -57,6 +63,8 @@ function App() {
 }
 
 export default App;
+
+
 
 
 
